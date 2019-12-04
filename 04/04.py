@@ -13,7 +13,7 @@ def test_part_one(pwd):
 
 def test_part_two(pwd):
     s = list(str(pwd))
-    return (sorted(s) == s) & any(s.count(c) == 2 for c in s)
+    return sorted(s) == s and any(s.count(c) == 2 for c in s)
 
 
 # part one
