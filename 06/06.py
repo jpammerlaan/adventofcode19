@@ -20,4 +20,4 @@ print(sum([len(o) for o in indirect_orbits]))
 # part two
 you = set(get_orbits(direct_orbits, direct_orbits['YOU']))
 san = set(get_orbits(direct_orbits, direct_orbits['SAN']))
-print(len(you.difference(san)) + len(san.difference(you)))
+print(len(you.symmetric_difference(san)))
