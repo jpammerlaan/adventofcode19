@@ -4,6 +4,7 @@ from collections import defaultdict
 DAY = '06'
 orbit_map = read_input_file(DAY, output_type='list')
 
+
 def get_orbits(orbits, obj):
     orb = [obj]
     while orbits[obj] != 'COM':
@@ -17,7 +18,6 @@ indirect_orbits = [get_orbits(direct_orbits, obj) for obj in direct_orbits]
 # part one
 print(sum([len(o) for o in indirect_orbits]))
 # part two
-you = get_orbits(direct_orbits, 'K')
-print(you)
-san = get_orbits(direct_orbits, 'I')
-print(len(you) + len(san) - 2*len(set(you).intersection(san)) + 2)
+you = set(get_orbits(direct_orbits, direct_orbits['YOU']))
+san = set(get_orbits(direct_orbits, direct_orbits['SAN']))
+print(len(you.difference(san)) + len(san.difference(you)))
