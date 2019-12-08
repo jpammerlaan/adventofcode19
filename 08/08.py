@@ -11,15 +11,14 @@ def chunk(x, size):
 
 
 def get_pixel(layers, i, depth=0):
-    return get_pixel(layers, i, depth+1) if layers[depth][i] == '2' else layers[depth][i]
+    return get_pixel(layers, i, depth + 1) if layers[depth][i] == '2' else layers[depth][i]
 
 
-layers = chunk(pixels_raw, H*W)
+layers = chunk(pixels_raw, H * W)
 # part one
 check_layer = layers[min(map(lambda x: x.count('0'), layers))]
 print(check_layer.count('1') * check_layer.count('2'))
 # part two
-pixels_list = list(map(lambda i: get_pixel(layers, i), range(H*W)))
+pixels_list = list(map(lambda i: get_pixel(layers, i), range(H * W)))
 pixels_grid = chunk(pixels_list, W)
 print('\n'.join(''.join(['#' if p == '1' else ' ' for p in row]) for row in pixels_grid))
-
