@@ -15,6 +15,7 @@ def get_op_modes(op_str):
 def run_program(intcode, phase, input_val):
     i = 0
     num_params = [0, 3, 3, 1, 1, 2, 2, 3, 3]
+    return_val = 0
     used_phase = False
 
     while intcode[i] != 99:
@@ -29,7 +30,7 @@ def run_program(intcode, phase, input_val):
             intcode[intcode[i + 1]] = input_val if used_phase else phase
             used_phase = True
         elif op == 4:
-            intcode[0] = intcode[intcode[i + 1]]  # use intcode[0] as output value since it's never (re)used
+            return_val = intcode[intcode[i + 1]]
         elif op == 5:
             i = args[1] - 3 if args[0] != 0 else i  # offset the increment at the end of this loop by subtracting 3
         elif op == 6:
@@ -41,22 +42,21 @@ def run_program(intcode, phase, input_val):
         else:
             raise ValueError('Invalid operator code {}'.format(op))
         i += num_params[op] + 1
-    return intcode[0]
+    return return_val
 
 
-def find_highest(phase_range):
+def find_highest(base_intcode, phase_range):
     phase_perms = permutations(phase_range)
     highest = 0
-    input_val = 0
     for phases in phase_perms:
+        input_val = 0
         for phase in phases:
             input_val = run_program(base_intcode.copy(), phase, input_val)
-            print(input_val)
         highest = input_val if input_val > highest else highest
     return highest
 
 
 # part one
-# print(find_highest(phase_range=range(0, 5)))
+print(find_highest(base_intcode=base_intcode, phase_range=range(0, 5)))
 # part two
-print(find_highest(phase_range=range(5, 10)))
+# print(find_highest(phase_range=range(5, 10)))
