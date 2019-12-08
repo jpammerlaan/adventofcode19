@@ -56,7 +56,12 @@ def find_highest(base_intcode, phase_range):
     return highest
 
 
+def find_highest_loop(base_intcode, phase_range):
+    intcodes = [base_intcode.copy() for _ in phase_range]
+    inputs = [0 for _ in phase_range]
+
+
 # part one
 print(find_highest(base_intcode=base_intcode, phase_range=range(0, 5)))
 # part two
-# print(find_highest(phase_range=range(5, 10)))
+print(find_highest_loop(base_intcode=base_intcode, phase_range=range(5, 10)))
