@@ -1,5 +1,5 @@
 from helper_functions.io import read_input_file
-from intcode.program import Program
+from helper_functions.intcode import Program
 
 DAY = '09'
 input_string = read_input_file(DAY)
