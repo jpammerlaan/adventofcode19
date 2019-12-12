@@ -14,6 +14,9 @@ class Program:
         modes = list(map(int, op_str[0:3]))  # get modes as ints
         return int(op_str[3:]), modes[::-1]  # reverse the modes list
 
+    def is_alive(self):
+        return self.alive
+
     def get_output(self):
         return self.output
 
@@ -31,7 +34,7 @@ class Program:
     def __setitem__(self, index, val):
         self.program[index] = val
 
-    def run(self, input_val):
+    def run(self, input_val=None):
         while self[self.idx] != 99:
             op, modes = self._get_op_modes(str(self[self.idx]))
             params = [self.__get_param(self.idx + j + 1, modes[j]) for j in range(self.NUM_PARAMS[op])]
@@ -43,6 +46,8 @@ class Program:
                 self[params[0]] = input_val
             elif op == 4:
                 self.output = self[params[0]]
+                self.idx += self.NUM_PARAMS[op] + 1
+                return self.output
             elif op == 5:
                 if self[params[0]] != 0:
                     self.idx = self[params[1]] - 3
