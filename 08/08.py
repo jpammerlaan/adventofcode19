@@ -1,4 +1,4 @@
-from helper_functions.io import read_input_file
+from helper_functions.io import read_input_file, print_binary_grid
 
 DAY = '08'
 pixels_raw = read_input_file(DAY, output_type='string')
@@ -21,4 +21,4 @@ print(check_layer.count('1') * check_layer.count('2'))
 # part two
 pixels_list = list(map(lambda i: get_pixel(layers, i), range(H * W)))
 pixels_grid = chunk(pixels_list, W)
-print('\n'.join(''.join(['#' if p == '1' else ' ' for p in row]) for row in pixels_grid))
+print_binary_grid(pixels_grid, target_val='1')

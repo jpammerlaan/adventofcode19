@@ -34,6 +34,10 @@ class Program:
     def __setitem__(self, index, val):
         self.program[index] = val
 
+    def run_until_dead(self, input_val=None):
+        while self.is_alive():
+            self.run(input_val)
+
     def run(self, input_val=None):
         while self[self.idx] != 99:
             op, modes = self._get_op_modes(str(self[self.idx]))
