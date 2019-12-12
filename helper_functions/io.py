@@ -12,3 +12,10 @@ def read_input_file(day, output_type='string'):
     else:
         raise ValueError('Unknown output_type {}. Expected string or list.'.format(output_type))
     return input_content
+
+
+def print_binary_grid(grid, target_val=1):
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            print('#' if grid[i][j] == target_val else ' ', end='')
+        print('')

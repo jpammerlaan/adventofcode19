@@ -4,6 +4,7 @@ class Program:
     def __init__(self, program):
         self.program = program + [0] * 10000  # pad the intcode with an arbitrarily long list
         self.output = None
+        self.alive = True
         self.relative_base = 0
         self.idx = 0
 
@@ -12,6 +13,9 @@ class Program:
         op_str = op_str.zfill(5)  # pad opcode to length 5 so we can always use it the same way
         modes = list(map(int, op_str[0:3]))  # get modes as ints
         return int(op_str[3:]), modes[::-1]  # reverse the modes list
+
+    def is_alive(self):
+        return self.alive
 
     def get_output(self):
         return self.output
@@ -30,7 +34,11 @@ class Program:
     def __setitem__(self, index, val):
         self.program[index] = val
 
-    def run(self, input_val):
+    def run_until_dead(self, input_val=None):
+        while self.is_alive():
+            self.run(input_val)
+
+    def run(self, input_val=None):
         while self[self.idx] != 99:
             op, modes = self._get_op_modes(str(self[self.idx]))
             params = [self.__get_param(self.idx + j + 1, modes[j]) for j in range(self.NUM_PARAMS[op])]
@@ -42,6 +50,8 @@ class Program:
                 self[params[0]] = input_val
             elif op == 4:
                 self.output = self[params[0]]
+                self.idx += self.NUM_PARAMS[op] + 1
+                return self.output
             elif op == 5:
                 if self[params[0]] != 0:
                     self.idx = self[params[1]] - 3
@@ -57,3 +67,4 @@ class Program:
             else:
                 raise ValueError('Invalid operator code {}'.format(op))
             self.idx += self.NUM_PARAMS[op] + 1
+        self.alive = False

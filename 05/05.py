@@ -7,10 +7,10 @@ base_intcode = list(map(int, input_string.split(',')))
 
 # part one
 p = Program(program=base_intcode.copy())
-p.run(1)
+p.run_until_dead(1)
 print(p.get_output())
 
 # part two
 p = Program(program=base_intcode.copy())
-p.run(5)
+p.run_until_dead(5)
 print(p.get_output())
