@@ -4,6 +4,7 @@ class Program:
     def __init__(self, program):
         self.program = program + [0] * 10000  # pad the intcode with an arbitrarily long list
         self.output = None
+        self.alive = True
         self.relative_base = 0
         self.idx = 0
 
@@ -57,3 +58,4 @@ class Program:
             else:
                 raise ValueError('Invalid operator code {}'.format(op))
             self.idx += self.NUM_PARAMS[op] + 1
+        self.alive = False
