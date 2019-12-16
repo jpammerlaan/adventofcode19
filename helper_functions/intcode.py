@@ -38,7 +38,7 @@ class Program:
         while self.is_alive():
             self.run(input_val)
 
-    def run(self, input_fn=None):
+    def run(self, input_fn=input):
         while self[self.idx] != 99:
             try:
                 op, modes = self._get_op_modes(str(self[self.idx]))
@@ -69,7 +69,7 @@ class Program:
                     raise ValueError('Invalid operator code {}'.format(op))
                 self.idx += self.NUM_PARAMS[op] + 1
             except Exception as e:
-                print(params)
-                print(input_fn)
+                print(f'params: {params}')
+                print(f'input_fn: {input_fn}')
                 raise e
         self.alive = False

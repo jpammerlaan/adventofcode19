@@ -7,10 +7,8 @@ base_intcode = list(map(int, input_string.split(',')))
 
 # part one
 boost = Program(program=base_intcode.copy())
-boost.run(1)
-print(boost.get_output())
+print(boost.run(input_fn=lambda: 1))
 
 # part two
 boost_two = Program(program=base_intcode.copy())
-boost_two.run(2)
-print(boost_two.get_output())
+print(boost_two.run(input_fn=lambda: 2))
