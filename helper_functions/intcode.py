@@ -48,7 +48,7 @@ class Program:
                 elif op == 2:
                     self[params[2]] = self[params[0]] * self[params[1]]
                 elif op == 3:
-                    self[params[0]] = input_fn
+                    self[params[0]] = input_fn()
                 elif op == 4:
                     self.output.append(self[params[0]])
                     self.idx += self.NUM_PARAMS[op] + 1
@@ -70,5 +70,6 @@ class Program:
                 self.idx += self.NUM_PARAMS[op] + 1
             except Exception as e:
                 print(params)
+                print(input_fn)
                 raise e
         self.alive = False
