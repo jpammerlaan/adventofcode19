@@ -17,7 +17,7 @@ def paint(start_value, X, Y):
     grid[y][x] = start_value
     visited = set()
     while True:
-        new_color = robot.run(grid[y][x])
+        new_color = robot.run(lambda: grid[y][x])
         if not robot.is_alive():
             break
         grid[y][x] = new_color
