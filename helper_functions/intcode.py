@@ -2,8 +2,8 @@ class Program:
     NUM_PARAMS = [0, 3, 3, 1, 1, 2, 2, 3, 3, 1]
 
     def __init__(self, program):
-        self.program = program + [0] * 10000  # pad the intcode with an arbitrarily long list
-        self.output = None
+        self.program = program + [0 for _ in range(10000)]  # pad the intcode with an arbitrarily long list
+        self.output = []
         self.alive = True
         self.relative_base = 0
         self.idx = 0
@@ -38,33 +38,38 @@ class Program:
         while self.is_alive():
             self.run(input_val)
 
-    def run(self, input_val=None):
+    def run(self, input_fn=None):
         while self[self.idx] != 99:
-            op, modes = self._get_op_modes(str(self[self.idx]))
-            params = [self.__get_param(self.idx + j + 1, modes[j]) for j in range(self.NUM_PARAMS[op])]
-            if op == 1:
-                self[params[2]] = self[params[0]] + self[params[1]]
-            elif op == 2:
-                self[params[2]] = self[params[0]] * self[params[1]]
-            elif op == 3:
-                self[params[0]] = input_val
-            elif op == 4:
-                self.output = self[params[0]]
+            try:
+                op, modes = self._get_op_modes(str(self[self.idx]))
+                params = [self.__get_param(self.idx + j + 1, modes[j]) for j in range(self.NUM_PARAMS[op])]
+                if op == 1:
+                    self[params[2]] = self[params[0]] + self[params[1]]
+                elif op == 2:
+                    self[params[2]] = self[params[0]] * self[params[1]]
+                elif op == 3:
+                    self[params[0]] = input_fn()
+                elif op == 4:
+                    self.output.append(self[params[0]])
+                    self.idx += self.NUM_PARAMS[op] + 1
+                    return self.output[-1]
+                elif op == 5:
+                    if self[params[0]] != 0:
+                        self.idx = self[params[1]] - 3
+                elif op == 6:
+                    if self[params[0]] == 0:
+                        self.idx = self[params[1]] - 3
+                elif op == 7:
+                    self[params[2]] = int(self[params[0]] < self[params[1]])
+                elif op == 8:
+                    self[params[2]] = int(self[params[0]] == self[params[1]])
+                elif op == 9:
+                    self.relative_base += self[params[0]]
+                else:
+                    raise ValueError('Invalid operator code {}'.format(op))
                 self.idx += self.NUM_PARAMS[op] + 1
-                return self.output
-            elif op == 5:
-                if self[params[0]] != 0:
-                    self.idx = self[params[1]] - 3
-            elif op == 6:
-                if self[params[0]] == 0:
-                    self.idx = self[params[1]] - 3
-            elif op == 7:
-                self[params[2]] = int(self[params[0]] < self[params[1]])
-            elif op == 8:
-                self[params[2]] = int(self[params[0]] == self[params[1]])
-            elif op == 9:
-                self.relative_base += self[params[0]]
-            else:
-                raise ValueError('Invalid operator code {}'.format(op))
-            self.idx += self.NUM_PARAMS[op] + 1
+            except Exception as e:
+                print(params)
+                print(input_fn)
+                raise e
         self.alive = False
