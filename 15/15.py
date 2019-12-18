@@ -21,8 +21,10 @@ class Droid(Program):
         self.x = 10
         self.y = 10
         self.path = []
+        self.path_to_tank = []
         self.grid = defaultdict(lambda: ' ', {(self.x, self.y): 'x'})
         self.attempts = (3, 0, 1, 2)
+        self.go_back = False
 
     def run(self, input_fn=None):
         i = 0
@@ -31,13 +33,17 @@ class Droid(Program):
             out = super().run(input_fn=lambda: self.DIRECTIONS[d])  # run the Intcode program
             new_x = self.x + self.DX[d]
             new_y = self.y + self.DY[d]
-            self.grid[(new_x, new_y)] = self.OUTPUT_MAP[out]
+            if self.grid[(new_x, new_y)] == ' ':
+                self.grid[(new_x, new_y)] = self.OUTPUT_MAP[out]
             i += 1
             if out > 0:
                 self.x, self.y = new_x, new_y
                 self.d = d
                 self.path.append(self.DIRECTIONS[d])
-                if out == 2:  # stop running when we find the oxygen tank
+                if out == 2 and not self.go_back:  #  save the path to the oxygen tank and go back
+                    self.path_to_tank = self.path.copy()
+                    self.go_back = True
+                if (self.x, self.y) == (10, 10) and self.go_back:
                     self.alive = False
                 break
 
@@ -53,8 +59,13 @@ class Droid(Program):
 droid = Droid(program=base_intcode.copy())
 # part one
 droid.run_until_dead()
-droid_path = ''.join([str(x) for x in droid.path])
+path_to_tank = ''.join([str(x) for x in droid.path_to_tank])
+print(len(path_to_tank))
 # reduce the droid path by filtering out excess paths (NS/SN/WE/EW parts)
-for _ in range(len(droid_path)):
-    droid_path = droid_path.replace('12', '').replace('21', '').replace('34', '').replace('43', '')
-print(len(droid_path))
+for _ in range(len(path_to_tank)):
+    path_to_tank = path_to_tank.replace('12', '').replace('21', '').replace('34', '').replace('43', '')
+print(len(path_to_tank))
+
+# part two
+droid_path = droid.path
+print(droid.path)
