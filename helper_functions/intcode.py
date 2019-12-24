@@ -34,11 +34,11 @@ class Program:
     def __setitem__(self, index, val):
         self.program[index] = val
 
-    def run_until_dead(self, input_val=None):
+    def run_until_dead(self, input_fn=input, *args, **kwargs):
         while self.is_alive():
-            self.run(input_val)
+            self.run(input_fn, *args, **kwargs)
 
-    def run(self, input_fn=input):
+    def run(self, input_fn=input, *args, **kwargs):
         while self[self.idx] != 99:
             try:
                 op, modes = self._get_op_modes(str(self[self.idx]))
@@ -48,7 +48,7 @@ class Program:
                 elif op == 2:
                     self[params[2]] = self[params[0]] * self[params[1]]
                 elif op == 3:
-                    self[params[0]] = input_fn()
+                    self[params[0]] = input_fn(*args, **kwargs)
                 elif op == 4:
                     self.output.append(self[params[0]])
                     self.idx += self.NUM_PARAMS[op] + 1
