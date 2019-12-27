@@ -10,7 +10,7 @@ pos = None
 for y, row in enumerate(input_maze):
     for x, cell in enumerate(list(row)):
         grid[(x, y)] = cell
-        if cell == '@':
+        if cell == '@':  # mark the start position
             grid[(x, y)] = '.'
             pos = (x, y)
 
@@ -28,7 +28,6 @@ def get_reachable(grid, s, have):
             (x, y + 1),
             (x, y - 1)
         ]
-        # print(neighbors)
         for p in neighbors:
             xn, yn = p
             if not (0 <= xn <= x_max and 0 <= yn <= y_max):
@@ -40,27 +39,53 @@ def get_reachable(grid, s, have):
             if grid[p] == '.' and p in dist:
                 continue
             dist[p] = dist[(x, y)] + 1
-            # print(p, dist[p], grid[p])
             if 'a' <= grid[p] <= 'z' and grid[p] not in keys:
                 keys[grid[p]] = dist[p], p
             bfs.append(p)
     return keys
 
 
-def get_paths(grid, to_get, pos, path, have, steps):
-    # TODO this works not
-    reachable = get_reachable(grid, pos, have)
-    print(f'have {path}, can reach {list(reachable.keys())}, took {steps} steps so far.')
-    for key in reachable.keys():
-        if key in path:
+def dijkstra(grid, pos, curr, unv, vis):
+    nodes = get_reachable(grid, pos, vis)
+    for key in nodes.keys():
+        if key in vis:
             continue
-        s, new_pos = reachable[key]
-        new_path = path.copy()
-        new_path.append(key)
-        path, have, steps = get_paths(grid, to_get, new_pos, new_path, set(new_path), steps + s)
-
-    return path, have, steps
+        unv[key] = min(unv[key], unv[curr] + nodes[key])
 
 
-to_get = set([key for key in grid.values() if 'a' <= key <= 'z'])
-paths = get_paths(grid, to_get, pos, [], set(), 0)
+def get_best_path(grid, pos, keys):
+    best = ([], 10_000)
+    paths_to_test = deque([([], pos, 0)])
+    i = 1
+    while paths_to_test:
+        base_path, base_pos, base_dist = paths_to_test.popleft()
+        r = get_reachable(grid, base_pos, base_path)
+        # print(f'base path: {base_path}, curr pos: {base_pos}, curr steps: {base_dist}, reachable from here: {r}')
+        for key in r.keys():
+            # print(f'testing key {key}...')
+            if key in base_path:
+                continue
+            key_dist, key_pos = r[key]
+            path = base_path.copy()
+            path.append(key)
+            dist = base_dist + key_dist
+            p = (path, key_pos, dist)
+            # print(f'Adding {p} to paths to test.')
+            paths_to_test.append(p)
+        if len(to_get - set(base_path)) == 0:
+            if base_dist < best[1]:
+                best = (base_path, base_dist)
+
+        if i % 100_000 == 0:
+            print(f'tested {i} paths. {len(paths_to_test)} paths left to test.')
+            return paths_to_test
+        i += 1
+    return best
+
+
+to_get = {key: get_reachable() for pos, key in grid.items() if ('a' <= key <= 'z')}
+# dijkstra(grid, pos, '@', to_get, [])
+best = get_best_path(grid, pos, to_get)
+print(best)
+
+# paths = get_paths(grid, to_get, pos, [], set(), 0)
