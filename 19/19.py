@@ -11,7 +11,7 @@ intcode = list(map(int, input_string.split(',')))
 def active(x, y):
     tractor = Program(intcode)
     inp = [y, x]  # apparently I'm reversing x and y somewhere, so... there. I fixed it.
-    tractor.run(input_fn=lambda: inp.pop())
+    tractor.run(input_fn=lambda: inp.pop())  # Oh. Here it is. Well, there you go!
     return tractor.get_output()[-1]
 
 
