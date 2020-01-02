@@ -1,3 +1,4 @@
 pandas==0.25.3
 numpy==1.17.4
-parse
+sympy==1.5
+parse==1.12.1
