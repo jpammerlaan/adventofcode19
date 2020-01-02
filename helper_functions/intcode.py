@@ -3,6 +3,7 @@ class Program:
 
     def __init__(self, program):
         self.program = program + [0 for _ in range(10000)]  # pad the intcode with an arbitrarily long list
+        self.init_program = self.program.copy()
         self.output = []
         self.alive = True
         self.relative_base = 0
@@ -13,6 +14,13 @@ class Program:
         op_str = op_str.zfill(5)  # pad opcode to length 5 so we can always use it the same way
         modes = list(map(int, op_str[0:3]))  # get modes as ints
         return int(op_str[3:]), modes[::-1]  # reverse the modes list
+
+    def reset(self):
+        self.program = self.init_program.copy()
+        self.output = []
+        self.alive = True
+        self.relative_base = 0
+        self.idx = 0
 
     def is_alive(self):
         return self.alive
