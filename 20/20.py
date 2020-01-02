@@ -1,5 +1,6 @@
 from helper_functions.io import read_input_file
 from collections import deque
+from collections import defaultdict
 
 DAY = '20'
 # maze = read_input_file(DAY, output_type='list')
@@ -70,6 +71,9 @@ def get_portal_positions(grid, portal):
         return [(13, 16)]
 
 
+portal_distances = defaultdict(dict)
 aa_pos = get_portal_positions(maze, 'AA').pop()
 zz_pos = get_portal_positions(maze, 'ZZ').pop()
-portal_distances = get_distances(maze, aa_pos)
+portal_distances[aa_pos] = get_distances(maze, aa_pos)
+for p in portal_distances[aa_pos].values():
+    portal_distances[p] = get_distances(maze, p[1])
